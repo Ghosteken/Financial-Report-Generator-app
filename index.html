@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Generate Financial Report</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="pane" role="main">
+    <header class="header">
+      <h1>Generate Financial Report</h1>
+      <p class="subtitle">Create a concise DOCX report quickly</p>
+    </header>
+
+    <form id="reportForm" class="form" novalidate>
+      <section class="control">
+        <label class="label">Report Type</label>
+        <div class="segmented" role="tablist" aria-label="Report Type" id="reportType">
+          <button type="button" class="chip" data-value="P&L" aria-pressed="false">P&L</button>
+          <button type="button" class="chip" data-value="Balance Sheet" aria-pressed="false">Balance Sheet</button>
+          <button type="button" class="chip" data-value="Cash Flow" aria-pressed="false">Cash Flow</button>
+        </div>
+      </section>
+
+      <section class="control">
+        <label for="year" class="label">Reporting Year</label>
+        <div class="year-select">
+          <input id="year" name="year" type="number" min="2000" max="2030" step="1" value="2025">
+          <div class="year-controls">
+            <button type="button" id="yrDec" aria-label="Decrease year">−</button>
+            <button type="button" id="yrInc" aria-label="Increase year">+</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="control">
+        <label for="client" class="label">Client Name or ID</label>
+        <input id="client" name="client" type="text" placeholder="Acme Corp or 12345" autocomplete="off">
+      </section>
+
+      <div class="actions">
+        <button id="generate" class="primary" type="submit">Generate Report</button>
+        <button id="preview" class="ghost" type="button">Preview Payload</button>
+      </div>
+
+      <div id="message" class="message" role="status" aria-live="polite"></div>
+
+      <details class="bonus">
+        <summary>Recent Clients</summary>
+        <ul id="recentClients" class="recent-list"></ul>
+      </details>
+    </form>
+
+    <footer class="footer">
+      <small>Optimized for a 350px task pane</small>
+    </footer>
+  </main>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
