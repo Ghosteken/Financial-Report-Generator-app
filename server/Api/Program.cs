@@ -9,7 +9,7 @@ using ReportServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Allow local testing from the frontend server
+// local testing from the frontend server
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("LocalDev", policy =>
@@ -32,15 +32,14 @@ app.MapPost("/reports", async (HttpRequest req) =>
         if (model == null)
             return Results.BadRequest(new { error = "Invalid payload" });
 
-        // Basic validation
+        // validation
         if (string.IsNullOrWhiteSpace(model.Client) || string.IsNullOrWhiteSpace(model.ReportType))
             return Results.BadRequest(new { error = "client and reportType required" });
 
-        // Create a unique filename per request
+        // unique filename per request
         var id = Guid.NewGuid().ToString("N");
         var outFile = Path.Combine(Directory.GetCurrentDirectory(), $"GeneratedReport_{id}.docx");
 
-        // Call generator directly with the unique output path.
         ReportGenerator.CreateSimpleReport(model.Client, model.ReportType, outFile);
         if (File.Exists(outFile))
         {
@@ -56,7 +55,7 @@ app.MapPost("/reports", async (HttpRequest req) =>
     }
 });
 
-// Static file endpoint to download created reports
+// endpoint to download created reports
 var filesDir = Directory.GetCurrentDirectory();
 app.MapGet("/files/{name}", (string name) =>
 {
