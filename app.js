@@ -94,9 +94,36 @@ form.addEventListener('submit',(e)=>{
   message.style.color = 'var(--muted)';
 
   // simulate sending to backend
-  setTimeout(()=>{
+  setTimeout(async ()=>{
     message.textContent = `Payload ready — Report: ${res.payload.reportType} (${res.payload.reportingYear}) for ${res.payload.client}`;
     message.style.color = 'var(--accent)';
+
+    // Optional: send to local API if available (developer opt-in)
+    // Set SEND_TO_API to true to enable automatic POST to http://localhost:5000/reports
+    const SEND_TO_API = true; // change to true to enable
+    if(SEND_TO_API){
+      message.textContent = 'Sending to local API...';
+      try{
+        const r = await fetch('http://localhost:5000/reports', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(res.payload)
+        });
+        const body = await r.json();
+        if(r.ok){
+          message.textContent = `Report generated: ${body.fileName}`;
+          message.style.color = 'var(--accent)';
+          // open download link in new tab
+          window.open(`http://localhost:5000${body.file}`,'_blank');
+        } else {
+          message.textContent = body.error || JSON.stringify(body);
+          message.style.color = 'var(--danger)';
+        }
+      }catch(err){
+        message.textContent = 'Failed to send to local API: '+err.message;
+        message.style.color = 'var(--danger)';
+      }
+    }
   },600);
 });
 
