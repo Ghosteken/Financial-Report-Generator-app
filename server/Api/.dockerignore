@@ -1,0 +1,7 @@
+bin/
+obj/
+publish/
+*.user
+*.vs
+node_modules
+config.js

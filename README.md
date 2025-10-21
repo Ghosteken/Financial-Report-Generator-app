@@ -30,3 +30,33 @@ DOCX creation with the OpenXML SDK runs on the server because it requires a stab
 
 - Feature: "Recent Clients" quick-select list (saved in localStorage) surfaced under the Client input so frequently used client names/IDs can be selected with one tap. It reduces repetitive typing and input errors for repeat users, speeding up report generation in a narrow task pane and improving workflow efficiency.
 
+Deploying to Render
+-------------------
+
+This project is prepared for deployment to Render. Recommended approach:
+
+1. Frontend (static site)
+	- Create a new Static Site on Render and connect the GitHub repo.
+	- Set an environment variable `API_BASE` to the public API URL (for example: `https://financial-report-api.onrender.com`).
+	- Under "Build Command" set: `npm run build-config` to generate `config.js` from `API_BASE` before deploy.
+	- Publish directory: repository root `/` (the static files are in the repo root).
+
+2. Backend (web service)
+	- Create a new Web Service on Render and connect the same repo.
+	- Choose Docker as the runtime and point to `server/Api/Dockerfile` (Render will build and run the container).
+	- Provide any environment variables needed and set `PORT` if required (the Dockerfile listens on 5000).
+
+Notes
+-----
+- The `build-config.js` script writes a `config.js` file that sets `window.API_BASE`; the frontend (`app.js`) expects that at runtime. Render's Static Site Build Command will run the script and create `config.js` in the repo root during build.
+- The `server/Api/Dockerfile` performs a multi-stage build and publishes the API. The API writes generated files to its working directory; for production you should modify the API to store files in a cloud blob store (Azure Blob / S3) and return signed URLs.
+- After deploying, set `API_BASE` in the frontend service to the backend's URL (for Render: `https://<your-backend>.onrender.com`).
+
+Local testing
+-------------
+- To generate `config.js` locally before serving static files manually:
+	- Install Node.js, then run `npm run build-config` in the repo root to create `config.js`.
+- Start the API locally from `server/Api` with `dotnet run --urls http://localhost:5000`.
+- Start a static server from the repo root (e.g., `python -m http.server 8080` or `npx http-server -p 8080`).
+
+

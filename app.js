@@ -98,13 +98,14 @@ form.addEventListener('submit',(e)=>{
     message.textContent = `Payload ready — Report: ${res.payload.reportType} (${res.payload.reportingYear}) for ${res.payload.client}`;
     message.style.color = 'var(--accent)';
 
-    // Optional: send to local API if available (developer opt-in)
-    // Set SEND_TO_API to true to enable automatic POST to http://localhost:5000/reports
-    const SEND_TO_API = true; // change to true to enable
+    // If a runtime API base is configured on window (injected at deploy time), use it.
+    // The deploy process should create a small config.js that sets window.API_BASE.
+    const API_BASE = (window.API_BASE || window.__API_BASE__ || 'http://localhost:5000').replace(/\/$/, '');
+    const SEND_TO_API = !!API_BASE;
     if(SEND_TO_API){
-      message.textContent = 'Sending to local API...';
+      message.textContent = `Sending to API: ${API_BASE}...`;
       try{
-        const r = await fetch('http://localhost:5000/reports', {
+        const r = await fetch(`${API_BASE}/reports`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(res.payload)
@@ -114,13 +115,14 @@ form.addEventListener('submit',(e)=>{
           message.textContent = `Report generated: ${body.fileName}`;
           message.style.color = 'var(--accent)';
           // open download link in new tab
-          window.open(`http://localhost:5000${body.file}`,'_blank');
+          const downloadUrl = body.file.startsWith('/') ? `${API_BASE}${body.file}` : body.file;
+          window.open(downloadUrl,'_blank');
         } else {
           message.textContent = body.error || JSON.stringify(body);
           message.style.color = 'var(--danger)';
         }
       }catch(err){
-        message.textContent = 'Failed to send to local API: '+err.message;
+        message.textContent = 'Failed to send to API: '+err.message;
         message.style.color = 'var(--danger)';
       }
     }

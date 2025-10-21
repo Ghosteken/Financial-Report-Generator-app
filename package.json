@@ -1,0 +1,9 @@
+{
+  "name": "financial-report-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "build-config": "node build-config.js"
+  },
+  "devDependencies": {
+  }
+}
