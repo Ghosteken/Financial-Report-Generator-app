@@ -22,6 +22,10 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// Serve static files from wwwroot if present (used when frontend is bundled with the API)
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.UseCors("LocalDev");
 
 app.MapPost("/reports", async (HttpRequest req) =>
@@ -63,6 +67,14 @@ app.MapGet("/files/{name}", (string name) =>
     if (!File.Exists(file)) return Results.NotFound();
     var stream = File.OpenRead(file);
     return Results.File(stream, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", name);
+});
+
+// Fallback to index.html for SPA routes if index exists in wwwroot
+app.MapFallback(() =>
+{
+    var indexPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "index.html");
+    if (File.Exists(indexPath)) return Results.File(indexPath, "text/html");
+    return Results.NotFound();
 });
 
 app.Run();

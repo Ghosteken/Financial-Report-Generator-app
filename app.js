@@ -100,12 +100,15 @@ form.addEventListener('submit',(e)=>{
 
     // If a runtime API base is configured on window (injected at deploy time), use it.
     // The deploy process should create a small config.js that sets window.API_BASE.
-    const API_BASE = (window.API_BASE || window.__API_BASE__ || 'http://localhost:5000').replace(/\/$/, '');
-    const SEND_TO_API = !!API_BASE;
+    // Respect an injected API_BASE variable even if it's an empty string (meaning same-origin)
+    const cfg = (typeof window.API_BASE !== 'undefined') ? window.API_BASE : ((typeof window.__API_BASE__ !== 'undefined') ? window.__API_BASE__ : null);
+    const API_BASE = (cfg !== null) ? String(cfg).replace(/\/$/, '') : 'http://localhost:5000';
+    const SEND_TO_API = (API_BASE !== null);
     if(SEND_TO_API){
-      message.textContent = `Sending to API: ${API_BASE}...`;
+      message.textContent = `Sending to API: ${API_BASE || '<same-origin>'}...`;
       try{
-        const r = await fetch(`${API_BASE}/reports`, {
+        const endpoint = (API_BASE === '') ? '/reports' : `${API_BASE}/reports`;
+        const r = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(res.payload)
@@ -115,8 +118,8 @@ form.addEventListener('submit',(e)=>{
           message.textContent = `Report generated: ${body.fileName}`;
           message.style.color = 'var(--accent)';
           // open download link in new tab
-          const downloadUrl = body.file.startsWith('/') ? `${API_BASE}${body.file}` : body.file;
-          window.open(downloadUrl,'_blank');
+          const downloadUrl = (body.file && body.file.startsWith('/')) ? ((API_BASE === '') ? body.file : `${API_BASE}${body.file}`) : body.file;
+          window.open(downloadUrl || '', '_blank');
         } else {
           message.textContent = body.error || JSON.stringify(body);
           message.style.color = 'var(--danger)';

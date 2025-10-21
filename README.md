@@ -46,6 +46,17 @@ This project is prepared for deployment to Render. Recommended approach:
 	- Choose Docker as the runtime and point to `server/Api/Dockerfile` (Render will build and run the container).
 	- Provide any environment variables needed and set `PORT` if required (the Dockerfile listens on 5000).
 
+	Single-service option (serve frontend + API from one web service)
+	-------------------------------------------------------------
+
+	If your static deploy failed, you can deploy the frontend and API as one web service on Render using the repo-root `Dockerfile`. This Dockerfile generates `config.js`, copies static files into `server/Api/wwwroot`, builds the API, and runs the image. When creating the Web Service, use:
+
+	- Dockerfile Path: `./Dockerfile` (repo root)
+	- Build Command: leave default (Render will build the Docker image)
+	- Environment Variables: set `API_BASE` to an empty string (or leave unset) so the frontend posts to the same origin.
+
+	After deploy the public URL (e.g., `https://financial-report-app.onrender.com`) will serve the frontend and the API under the same origin; the frontend will POST to `/reports` (same origin) and download files via `/files/<name>`.
+
 Notes
 -----
 - The `build-config.js` script writes a `config.js` file that sets `window.API_BASE`; the frontend (`app.js`) expects that at runtime. Render's Static Site Build Command will run the script and create `config.js` in the repo root during build.
