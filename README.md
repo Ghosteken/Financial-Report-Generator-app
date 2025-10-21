@@ -9,7 +9,6 @@ Files:
 - server/ReportGenerator.cs — C# method using OpenXML SDK
 
 Frontend
-- Open index.html in a browser or deploy to GitHub Pages / Netlify.
 - The UI lets you choose Report Type, Reporting Year, Client Name/ID and generate a JSON payload.
 
 Backend (C# / OpenXML)
@@ -30,7 +29,4 @@ DOCX creation with the OpenXML SDK runs on the server because it requires a stab
 4. Bonus feature
 
 - Feature: "Recent Clients" quick-select list (saved in localStorage) surfaced under the Client input so frequently used client names/IDs can be selected with one tap. It reduces repetitive typing and input errors for repeat users, speeding up report generation in a narrow task pane and improving workflow efficiency.
-
-Deployment
-- To publish the frontend: push to a GitHub repo and enable GitHub Pages or deploy to Netlify/Vercel.
 
