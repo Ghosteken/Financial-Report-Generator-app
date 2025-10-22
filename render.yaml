@@ -1,12 +1,12 @@
-services:
-  - type: web
-    name: financial-report-api
-    repo: <REPO_URL>
-    branch: main
-    dockerfilePath: server/Api/Dockerfile
-  - type: static
-    name: financial-report-frontend
-    repo: <REPO_URL>
-    branch: main
-    buildCommand: "npm run build-config"
-    publishCommand: "echo 'Static site served from repo root'"
+# services:
+#   - type: web
+#     name: financial-report-api
+#     repo: 
+#     branch: main
+#     dockerfilePath: server/Api/Dockerfile
+#   - type: static
+#     name: financial-report-frontend
+#     repo: 
+#     branch: main
+#     buildCommand: "npm run build-config"
+#     publishCommand: "echo 'Static site served from repo root'"

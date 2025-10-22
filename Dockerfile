@@ -12,14 +12,14 @@ RUN node build-config.js
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-# copy API project files
+
 COPY server/Api/*.csproj ./
 RUN dotnet restore
 
-# copy rest of repo
+
 COPY . ./
 
-# copy generated config from the frontend-config stage into this stage
+
 COPY --from=frontend-config /src/config.js ./config.js
 
 # copy generated config and static files into server/Api/wwwroot

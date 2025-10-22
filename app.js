@@ -73,8 +73,6 @@ export function prepareAgentRequest(){
     client,
     requestedAt: new Date().toISOString()
   };
-
-  // save recent
   saveRecent(client);
 
   return { ok:true, payload };
@@ -98,12 +96,6 @@ form.addEventListener('submit',(e)=>{
     message.textContent = `Payload ready — Report: ${res.payload.reportType} (${res.payload.reportingYear}) for ${res.payload.client}`;
     message.style.color = 'var(--accent)';
 
-    // If a runtime API base is configured on window (injected at deploy time), use it.
-    // The deploy process should create a small config.js that sets window.API_BASE.
-    // Determine API base:
-    // - If window.API_BASE is defined (including empty string), use it.
-    // - Otherwise, if running on localhost, use local API at http://localhost:5000 for dev.
-    // - Otherwise assume same-origin (empty string) in production.
     const cfg = (typeof window.API_BASE !== 'undefined') ? window.API_BASE : ((typeof window.__API_BASE__ !== 'undefined') ? window.__API_BASE__ : undefined);
     let API_BASE;
     if (typeof cfg !== 'undefined') {
@@ -113,7 +105,7 @@ form.addEventListener('submit',(e)=>{
     } else {
       API_BASE = '';
     }
-    const SEND_TO_API = true; // always attempt to send; endpoint chosen by API_BASE
+    const SEND_TO_API = true; 
     if(SEND_TO_API){
       message.textContent = `Sending to API: ${API_BASE || '<same-origin>'}...`;
       try{
@@ -124,7 +116,7 @@ form.addEventListener('submit',(e)=>{
           body: JSON.stringify(res.payload)
         });
 
-        // Be defensive about response type: server may return HTML (error page) instead of JSON
+        // defensive about response type
         const ct = r.headers.get('content-type') || '';
         let body = null;
         if (ct.includes('application/json') || ct.includes('application/problem+json')) {
@@ -138,7 +130,7 @@ form.addEventListener('submit',(e)=>{
             return;
           }
         } else {
-          // fallback: read text (HTML error page or plain text)
+          // fallback
           body = await r.text();
         }
 
@@ -155,7 +147,7 @@ form.addEventListener('submit',(e)=>{
             window.open(downloadUrl || '', '_blank');
           }
         } else {
-          // error — body may be JSON object or HTML/text string
+          
           if (typeof body === 'string') {
             message.textContent = `Error from server: ${body.substring(0, 300)}`;
             console.error('Server error (text):', body);
@@ -183,7 +175,7 @@ previewBtn.addEventListener('click',()=>{
     message.style.color = 'var(--danger)';
     return;
   }
-  // show JSON in a new window (quick preview)
+  
   const w = window.open('','_blank','width=420,height=400');
   w.document.body.style.background='#071021';
   w.document.body.style.color='#cfe9dd';
