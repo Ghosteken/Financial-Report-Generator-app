@@ -100,10 +100,20 @@ form.addEventListener('submit',(e)=>{
 
     // If a runtime API base is configured on window (injected at deploy time), use it.
     // The deploy process should create a small config.js that sets window.API_BASE.
-    // Respect an injected API_BASE variable even if it's an empty string (meaning same-origin)
-    const cfg = (typeof window.API_BASE !== 'undefined') ? window.API_BASE : ((typeof window.__API_BASE__ !== 'undefined') ? window.__API_BASE__ : null);
-    const API_BASE = (cfg !== null) ? String(cfg).replace(/\/$/, '') : 'http://localhost:5000';
-    const SEND_TO_API = (API_BASE !== null);
+    // Determine API base:
+    // - If window.API_BASE is defined (including empty string), use it.
+    // - Otherwise, if running on localhost, use local API at http://localhost:5000 for dev.
+    // - Otherwise assume same-origin (empty string) in production.
+    const cfg = (typeof window.API_BASE !== 'undefined') ? window.API_BASE : ((typeof window.__API_BASE__ !== 'undefined') ? window.__API_BASE__ : undefined);
+    let API_BASE;
+    if (typeof cfg !== 'undefined') {
+      API_BASE = String(cfg).replace(/\/$/, '');
+    } else if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+      API_BASE = 'http://localhost:5000';
+    } else {
+      API_BASE = '';
+    }
+    const SEND_TO_API = true; // always attempt to send; endpoint chosen by API_BASE
     if(SEND_TO_API){
       message.textContent = `Sending to API: ${API_BASE || '<same-origin>'}...`;
       try{

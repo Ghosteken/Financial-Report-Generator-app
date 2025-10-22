@@ -69,6 +69,14 @@ app.MapGet("/files/{name}", (string name) =>
     return Results.File(stream, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", name);
 });
 
+// Serve favicon.ico if present in wwwroot, otherwise return 204 to avoid noisy 404 logs
+app.MapGet("/favicon.ico", () =>
+{
+    var favPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "favicon.ico");
+    if (File.Exists(favPath)) return Results.File(favPath, "image/x-icon");
+    return Results.StatusCode(204);
+});
+
 // Fallback to index.html for SPA routes if index exists in wwwroot
 app.MapFallback(() =>
 {
