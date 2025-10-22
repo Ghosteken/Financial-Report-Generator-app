@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Serve static files from wwwroot if present (used when frontend is bundled with the API)
+// to serve static files from wwwroot if present 
 app.UseDefaultFiles();
 app.UseStaticFiles();
 

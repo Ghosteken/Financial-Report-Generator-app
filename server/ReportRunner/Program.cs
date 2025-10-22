@@ -7,7 +7,7 @@ class Program
     {
         Console.WriteLine("Generating report...");
 
-        // Allow passing client and report type via command-line for quick testing
+        // passing client and report type via command-line for quick testing
         var client = args.Length > 0 && !string.IsNullOrWhiteSpace(args[0]) ? args[0] : "Acme Corp";
         var reportType = args.Length > 1 && !string.IsNullOrWhiteSpace(args[1]) ? args[1] : "P&L";
 

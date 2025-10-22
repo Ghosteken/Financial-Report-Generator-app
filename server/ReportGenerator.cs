@@ -8,15 +8,12 @@ namespace ReportServer
 {
     public static class ReportGenerator
     {
-        // Creates a simple Word document with a single paragraph.
         public static void CreateSimpleReport(string clientName, string reportType)
         {
             if (string.IsNullOrWhiteSpace(clientName)) throw new ArgumentException("clientName required");
             if (string.IsNullOrWhiteSpace(reportType)) throw new ArgumentException("reportType required");
 
             var fileName = "GeneratedReport.docx";
-
-            // Remove if exists to simplify repeated runs
             if (File.Exists(fileName)) File.Delete(fileName);
 
             using (var doc = WordprocessingDocument.Create(fileName, WordprocessingDocumentType.Document))
