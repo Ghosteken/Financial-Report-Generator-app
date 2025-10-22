@@ -18,7 +18,7 @@ Backend (C# / OpenXML)
 
 2. AI Agent Prompt / API Logic
 
-- Service Endpoint: POST https://api.example.com/reports/generate (production) — for local testing the API is POST http://localhost:5000/reports. The frontend sends a JSON body like { reportType, reportingYear, client, requestedAt } to that endpoint.
+- Service Endpoint: POST https://financial-report-generator-app.onrender.com/report   (production) — for local testing the API is POST http://localhost:5000/reports. The frontend sends a JSON body like { reportType, reportingYear, client, requestedAt } to that endpoint.
 
 - Backend Agent's Role: The backend service validates and enriches the incoming JSON, generates a unique output filename, and then invokes the C# OpenXML routine (ReportGenerator.CreateSimpleReport) with the validated inputs and target path. After generation the backend stores or exposes the file and returns a download URL (or a file reference) to the frontend.
 
@@ -29,39 +29,6 @@ DOCX creation with the OpenXML SDK runs on the server because it requires a stab
 4. Bonus feature
 
 - Feature: "Recent Clients" quick-select list (saved in localStorage) surfaced under the Client input so frequently used client names/IDs can be selected with one tap. It reduces repetitive typing and input errors for repeat users, speeding up report generation in a narrow task pane and improving workflow efficiency.
-
-Deploying to Render
--------------------
-
-This project is prepared for deployment to Render. Recommended approach:
-
-1. Frontend (static site)
-	- Create a new Static Site on Render and connect the GitHub repo.
-	- Set an environment variable `API_BASE` to the public API URL (for example: `https://financial-report-api.onrender.com`).
-	- Under "Build Command" set: `npm run build-config` to generate `config.js` from `API_BASE` before deploy.
-	- Publish directory: repository root `/` (the static files are in the repo root).
-
-2. Backend (web service)
-	- Create a new Web Service on Render and connect the same repo.
-	- Choose Docker as the runtime and point to `server/Api/Dockerfile` (Render will build and run the container).
-	- Provide any environment variables needed and set `PORT` if required (the Dockerfile listens on 5000).
-
-	Single-service option (serve frontend + API from one web service)
-	-------------------------------------------------------------
-
-	If your static deploy failed, you can deploy the frontend and API as one web service on Render using the repo-root `Dockerfile`. This Dockerfile generates `config.js`, copies static files into `server/Api/wwwroot`, builds the API, and runs the image. When creating the Web Service, use:
-
-	- Dockerfile Path: `./Dockerfile` (repo root)
-	- Build Command: leave default (Render will build the Docker image)
-	- Environment Variables: set `API_BASE` to an empty string (or leave unset) so the frontend posts to the same origin.
-
-	After deploy the public URL (e.g., `https://financial-report-app.onrender.com`) will serve the frontend and the API under the same origin; the frontend will POST to `/reports` (same origin) and download files via `/files/<name>`.
-
-Notes
------
-- The `build-config.js` script writes a `config.js` file that sets `window.API_BASE`; the frontend (`app.js`) expects that at runtime. Render's Static Site Build Command will run the script and create `config.js` in the repo root during build.
-- The `server/Api/Dockerfile` performs a multi-stage build and publishes the API. The API writes generated files to its working directory; for production you should modify the API to store files in a cloud blob store (Azure Blob / S3) and return signed URLs.
-- After deploying, set `API_BASE` in the frontend service to the backend's URL (for Render: `https://<your-backend>.onrender.com`).
 
 Local testing
 -------------
