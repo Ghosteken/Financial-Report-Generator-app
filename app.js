@@ -123,15 +123,49 @@ form.addEventListener('submit',(e)=>{
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(res.payload)
         });
-        const body = await r.json();
-        if(r.ok){
-          message.textContent = `Report generated: ${body.fileName}`;
-          message.style.color = 'var(--accent)';
-          // open download link in new tab
-          const downloadUrl = (body.file && body.file.startsWith('/')) ? ((API_BASE === '') ? body.file : `${API_BASE}${body.file}`) : body.file;
-          window.open(downloadUrl || '', '_blank');
+
+        // Be defensive about response type: server may return HTML (error page) instead of JSON
+        const ct = r.headers.get('content-type') || '';
+        let body = null;
+        if (ct.includes('application/json') || ct.includes('application/problem+json')) {
+          try {
+            body = await r.json();
+          } catch (parseErr) {
+            const txt = await r.text();
+            console.error('Failed to parse JSON response', parseErr, txt);
+            message.textContent = 'Server returned invalid JSON: see console for details';
+            message.style.color = 'var(--danger)';
+            return;
+          }
         } else {
-          message.textContent = body.error || JSON.stringify(body);
+          // fallback: read text (HTML error page or plain text)
+          body = await r.text();
+        }
+
+        if (r.ok) {
+          // body might be text or object
+          if (typeof body === 'string') {
+            // unlikely for success but handle
+            message.textContent = `Report generated (server response): ${body}`;
+            message.style.color = 'var(--accent)';
+          } else {
+            message.textContent = `Report generated: ${body.fileName}`;
+            message.style.color = 'var(--accent)';
+            const downloadUrl = (body.file && body.file.startsWith('/')) ? ((API_BASE === '') ? body.file : `${API_BASE}${body.file}`) : body.file;
+            window.open(downloadUrl || '', '_blank');
+          }
+        } else {
+          // error — body may be JSON object or HTML/text string
+          if (typeof body === 'string') {
+            message.textContent = `Error from server: ${body.substring(0, 300)}`;
+            console.error('Server error (text):', body);
+          } else if (body && body.error) {
+            message.textContent = body.error;
+            console.error('Server error (json):', body);
+          } else {
+            message.textContent = 'Unknown server error';
+            console.error('Server error unknown response:', body);
+          }
           message.style.color = 'var(--danger)';
         }
       }catch(err){
