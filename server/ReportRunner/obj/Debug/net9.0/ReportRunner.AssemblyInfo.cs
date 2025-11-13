@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ReportRunner")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d83ce8a5f4823976c927ef26d70fffdf4c53755a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+47493197b03b24da2df15c36e43c755b9d388774")]
 [assembly: System.Reflection.AssemblyProductAttribute("ReportRunner")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ReportRunner")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
