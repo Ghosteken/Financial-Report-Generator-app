@@ -1,0 +1,36 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{DAD03CFC-D5FA-AC94-41C7-9ABAB326F09E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "server\Api\Api.csproj", "{98C44F95-E36B-1559-9416-B712F20D22DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportRunner", "server\ReportRunner\ReportRunner.csproj", "{D9970495-0058-165C-9F38-3992780A8845}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{98C44F95-E36B-1559-9416-B712F20D22DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98C44F95-E36B-1559-9416-B712F20D22DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98C44F95-E36B-1559-9416-B712F20D22DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98C44F95-E36B-1559-9416-B712F20D22DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9970495-0058-165C-9F38-3992780A8845}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9970495-0058-165C-9F38-3992780A8845}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9970495-0058-165C-9F38-3992780A8845}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9970495-0058-165C-9F38-3992780A8845}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{98C44F95-E36B-1559-9416-B712F20D22DB} = {DAD03CFC-D5FA-AC94-41C7-9ABAB326F09E}
+		{D9970495-0058-165C-9F38-3992780A8845} = {DAD03CFC-D5FA-AC94-41C7-9ABAB326F09E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3E30A421-B8EC-40DB-86C0-D9F8A9D1A90F}
+	EndGlobalSection
+EndGlobal
